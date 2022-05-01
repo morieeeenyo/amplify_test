@@ -1,21 +1,25 @@
 import { Authenticator, withAuthenticator } from "@aws-amplify/ui-react";
 
 import "@aws-amplify/ui-react/styles.css";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "./providers/auth/authContext";
 
 function App() {
+  const { user, isAuthenticated, signOut } = useAuth();
+  const navigate = useNavigate()
+
+  const moveToMFASettings = () => {
+    navigate("/users/setup-mfa")
+  }
+
   return (
     <Authenticator>
-      {({ signOut, user }) => (
-        <main>
-          {user && (
-            // ユーザーがログインしているときのみ表示
-            <>
-              <h1>Hello {user.username}</h1>
-              <button onClick={(e) => setUpTOTP()}>SETUP TOTP</button>
-              <button onClick={signOut}>Sign out</button>
-            </>
-          )}
-        </main>
+      {isAuthenticated && (
+        <>
+          <h1>Hello {user?.getUsername()}</h1>
+          <button onClick={() => moveToMFASettings()}>SETUP TOTP</button>
+          <button onClick={signOut}>Sign out</button>
+        </>
       )}
     </Authenticator>
   );

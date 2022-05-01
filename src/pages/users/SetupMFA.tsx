@@ -4,18 +4,19 @@ import { CognitoUser } from "aws-amplify/node_modules/@aws-amplify/auth";
 import awsExports from "../../aws-exports";
 
 import { Amplify, Auth } from "aws-amplify";
+import { useAuth } from "../../providers/auth/authContext";
 
 // Amplifyの設定
 Amplify.configure(awsExports);
 
 export const SetupMFA: React.FC = () => {
-  const [showQRCode, setShowQRCode] = useState<boolean>(false);
   const [QRCodeUrl, setQRCodeUrl] = useState<string>("");
   const [token, setToken] = useState<string>("");
+  const { user } = useAuth();
 
   useEffect(() => {
     setUpTOTP()
-  }, [])
+  })
 
   // TOTPの設定を行う
   const setUpTOTP = () => {
@@ -27,13 +28,12 @@ export const SetupMFA: React.FC = () => {
       // user→アプリ名の下に表示されるユーザー名
       const str =
         "otpauth://totp/AWSCognito:" +
-        user.getUsername() +
+        user?.getUsername() +
         "?secret=" +
         code +
         "&issuer=" +
         issuer;
       setQRCodeUrl(str); // QRコードのURLを設定
-      setShowQRCode(true); // QRコードを表示
     });
   };
 
@@ -54,7 +54,7 @@ export const SetupMFA: React.FC = () => {
   return (
     <>
       <QRCode value={QRCodeUrl} />
-      <form onSubmit={(e) => verifyToken(e, user)}>
+      <form onSubmit={(e) => verifyToken(e, user as CognitoUser)}>
         <input
           type="text"
           placeholder="type veryfication code"
