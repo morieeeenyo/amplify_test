@@ -4,6 +4,7 @@ import {
   Route,
 } from "react-router-dom";
 import App from "../App";
+import { SetupMFA } from "../pages/users/SetupMFA";
 
 // ルーティング
 export const Router: React.FC = () => {
@@ -11,6 +12,8 @@ export const Router: React.FC = () => {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<App />}>
+          <Route path="/users/setup-mfa" element={<SetupMFA />}>
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>
