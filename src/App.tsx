@@ -17,18 +17,14 @@ function App() {
   const [QRCodeUrl, setQRCodeUrl] = useState<string>("");
   const [token, setToken] = useState<string>("");
 
-  const getTOTP = (user: CognitoUser) => {
-    Auth.getPreferredMFA(user, {
-      bypassCache: false,
-    }).then((data) => {
-      console.log("Current preferred MFA type is: " + data);
-    });
-  };
-
+  // TOTPの設定を行う
   const setUpTOTP = (user: CognitoUser) => {
     Auth.setupTOTP(user).then((code) => {
       console.log(user);
       const issuer = encodeURI("AWSCognito");
+
+      // issuer→Authyに表示されるアプリ名
+      // user→アプリ名の下に表示されるユーザー名
       const str =
         "otpauth://totp/AWSCognito:" +
         user.getUsername() +
@@ -36,18 +32,21 @@ function App() {
         code +
         "&issuer=" +
         issuer;
-      setQRCodeUrl(str);
-      setShowQRCode(true);
+      setQRCodeUrl(str); // QRコードのURLを設定
+      setShowQRCode(true); // QRコードを表示
     });
   };
 
+  // tokenの検証
   const veryfyToken = (e: React.FormEvent, user: CognitoUser) => {
     e.preventDefault();
+    // 入力したtokenが正しい場合に、2段階認証の設定を完了しデバイスを登録する
     Auth.verifyTotpToken(user, token).then(() => {
       Auth.setPreferredMFA(user, "TOTP");
     });
   };
 
+  // tokenの入力を監視
   const handleTokenChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setToken(e.target.value as string);
   };
@@ -59,7 +58,6 @@ function App() {
           {user && (
             <>
               <h1>Hello {user.username}</h1>
-              <button onClick={(e) => getTOTP(user)}>GET TOTP</button>
               <button onClick={(e) => setUpTOTP(user)}>SETUP TOTP</button>
               {showQRCode && (
                 <>
