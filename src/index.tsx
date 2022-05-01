@@ -1,15 +1,19 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
+import CognitoAuthProvider from './providers/auth/CognitoAuthProvider';
 import reportWebVitals from './reportWebVitals';
 import { Router } from './router/index';
+import awsconfig from "./aws-exports";
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <Router />
+    <CognitoAuthProvider amplifyConfig={awsconfig}>
+      <Router />
+    </CognitoAuthProvider>
   </React.StrictMode>
 );
 

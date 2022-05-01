@@ -12,6 +12,7 @@ export type LoginOption = {
   username: string;
   password: string;
 };
+
 interface ICognitoAuthProviderParams {
   amplifyConfig: {
     aws_project_region: string;
