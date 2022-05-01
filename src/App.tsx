@@ -10,6 +10,7 @@ import { useState } from "react";
 import QRCode from "qrcode.react";
 import { CognitoUser } from "aws-amplify/node_modules/@aws-amplify/auth";
 
+// Amplifyの設定
 Amplify.configure(awsExports);
 
 function App() {
@@ -56,6 +57,7 @@ function App() {
       {({ signOut, user }) => (
         <main>
           {user && (
+            // ユーザーがログインしているときのみ表示
             <>
               <h1>Hello {user.username}</h1>
               <button onClick={(e) => setUpTOTP(user)}>SETUP TOTP</button>
